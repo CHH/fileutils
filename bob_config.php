@@ -2,8 +2,10 @@
 
 namespace Bob;
 
+task('default', array('test'));
+
 task('test', array('phpunit.xml'), function() {
-    echo sh('phpunit');
+    echo `phpunit`;
 });
 
 fileTask('phpunit.xml', array('phpunit.dist.xml'), function() {
