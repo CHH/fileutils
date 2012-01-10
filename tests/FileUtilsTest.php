@@ -22,4 +22,19 @@ class FileUtilsTest extends \PHPUnit_Framework_TestCase
     {
         FileUtils::chdir('/foo', function() {});
     }
+
+    /**
+     * @dataProvider testRelativizeProvider
+     */
+    function testRelativize($expected, $absolute)
+    {
+        $this->assertEquals($expected, FileUtils::relativize($absolute, __DIR__));
+    }
+
+    function testRelativizeProvider()
+    {
+        return array(
+            array('bootstrap.php', realpath(__DIR__.'/bootstrap.php')),
+        );
+    }
 }
