@@ -2,6 +2,24 @@
 
 class FileUtilsTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @dataProvider testIsAbsoluteProvider
+     */
+    function testIsAbsolute($path, $isAbsolute)
+    {
+        $this->assertEquals($isAbsolute, FileUtils::isAbsolute($path));
+    }
+
+    function testIsAbsoluteProvider()
+    {
+        return array(
+            array("foo/bar", false),
+            array("C:\\Windows", true),
+            array("C:\\\\Windows", true),
+            array("/etc", true),
+        );
+    }
+
     function testWithCwd()
     {
         $testCwd = getcwd();

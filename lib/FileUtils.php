@@ -7,16 +7,26 @@ class FileUtils
         if (realpath($path) === $path) {
             return true;
         }
+
+        # Absolute Path (Unix) or Absolute UNC Path.
+        if ($path[0] === '/' or $path[0] === '\\') {
+            return true;
+        }
+
+        # If the path starts with a drive letter or "\\" (Windows):
+        if (preg_match('#^([a-z]\:)?\\\\{1,2}#i', $path)) {
+            return true;
+        }
         return false;
     }
 
-    // Public: Checks if the dest file is not older than the
-    // source file.
-    //
-    // src
-    // dest
-    //
-    // Returns TRUE when the destination is up to date, FALSE otherwise.
+    # Public: Checks if the dest file is not older than the
+    # source file.
+    #
+    # src
+    # dest
+    #
+    # Returns TRUE when the destination is up to date, FALSE otherwise.
     static function upToDate($src, $dest)
     {
         if (!file_exists($dest)) {
@@ -53,16 +63,16 @@ class FileUtils
         return substr($path, strlen($basePath) + 1);
     }
 
-    // Public: Sets the Current Working Directory to the path
-    // given with `dir` and changes it back to the previous working
-    // directory after running the callback.
-    //
-    // dir      - This directory becomes the CWD.
-    // callback - The callback which should be run inside the CWD.
-    // argv     - Additional arguments which should get passed to the
-    //            callback.
-    //
-    // Returns the return value of the supplied callback.
+    # Public: Sets the Current Working Directory to the path
+    # given with `dir` and changes it back to the previous working
+    # directory after running the callback.
+    #
+    # dir      - This directory becomes the CWD.
+    # callback - The callback which should be run inside the CWD.
+    # argv     - Additional arguments which should get passed to the
+    #            callback.
+    #
+    # Returns the return value of the supplied callback.
     static function chdir($dir, $callback = null, $argv = array())
     {
         if (!is_dir($dir)) {
