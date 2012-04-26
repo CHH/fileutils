@@ -1,7 +1,15 @@
 <?php
 
+namespace CHH;
+
 class FileUtils
 {
+    # Public: Checks if the given path is absolute, regardless
+    # if the file exists or not.
+    #
+    # path - Path to check if absolute.
+    #
+    # Returns a Boolean.
     static function isAbsolute($path)
     {
         if (realpath($path) === $path) {
@@ -23,8 +31,8 @@ class FileUtils
     # Public: Checks if the dest file is not older than the
     # source file.
     #
-    # src
-    # dest
+    # src  - Source file path.
+    # dest - Destination file path.
     #
     # Returns TRUE when the destination is up to date, FALSE otherwise.
     static function upToDate($src, $dest)

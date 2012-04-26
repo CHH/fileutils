@@ -1,5 +1,7 @@
 <?php
 
+use CHH\FileUtils;
+
 class FileUtilsTest extends \PHPUnit_Framework_TestCase
 {
     /**
