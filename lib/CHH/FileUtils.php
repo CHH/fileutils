@@ -22,10 +22,47 @@ class FileUtils
         }
 
         # If the path starts with a drive letter or "\\" (Windows):
-        if (preg_match('#^([a-z]\:)?\\\\{1,2}#i', $path)) {
+        if (static::isWindows() and preg_match('#^([a-z]\:)?\\\\{1,2}#i', $path)) {
             return true;
         }
         return false;
+    }
+
+    static function isAbs($path)
+    {
+        return static::isAbsolute($path);
+    }
+
+    static protected function isWindows()
+    {
+        return "WIN" == strtoupper(substr(PHP_OS, 0, 3));
+    }
+
+    # Public: Joins path elements with a operating system specific separator.
+    #
+    # parts - Array of path elements.
+    #
+    # TODO:
+    #  - Clean up double slashes
+    #
+    # Returns the joined path elements as String.
+    static function join($parts)
+    {
+        if ($parts instanceof \Iterator) {
+            $parts = iterator_to_array($parts);
+        }
+
+        return join(DIRECTORY_SEPARATOR, $parts);
+    }
+
+    static function normalizeExtension($extension)
+    {
+        $extension = strtolower($extension);
+
+        if ('.' != $extension[0]) {
+            $extension = ".$extension";
+        }
+        return $extension;
     }
 
     # Public: Checks if the dest file is not older than the
@@ -69,6 +106,11 @@ class FileUtils
         }
 
         return substr($path, strlen($basePath) + 1);
+    }
+
+    static function rel($path, $basePath = null)
+    {
+        return static::relativize($path, $basePath);
     }
 
     # Public: Sets the Current Working Directory to the path
