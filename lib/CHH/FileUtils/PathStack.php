@@ -4,10 +4,12 @@ namespace CHH\FileUtils;
 
 class PathStack extends \SplStack
 {
-    function __construct($loadPaths = array())
+    protected $root;
+
+    function __construct($root = null)
     {
-        if ($loadPaths) {
-            $this->push($loadPaths);
+        if (null === $this->root) {
+            $this->root = getcwd();
         }
     }
 
@@ -17,7 +19,7 @@ class PathStack extends \SplStack
 
         foreach ($paths as $path) {
             $this->validate($path);
-            parent::push(rtrim($path, '\/'));
+            parent::push(\CHH\FileUtils::join(array($this->root, rtrim($path, '\/'))));
         }
 
         return $this;
@@ -29,7 +31,7 @@ class PathStack extends \SplStack
 
         foreach ($paths as $path) {
             $this->validate($path);
-            parent::unshift(rtrim($path, '\/'));
+            parent::unshift(\CHH\FileUtils::join(array($this->root, rtrim($path, '\/'))));
         }
 
         return $this;
