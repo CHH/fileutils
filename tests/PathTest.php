@@ -1,15 +1,15 @@
 <?php
 
-use CHH\FileUtils;
+use CHH\FileUtils\Path;
 
-class FileUtilsTest extends \PHPUnit_Framework_TestCase
+class PathTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider testIsAbsoluteProvider
      */
     function testIsAbsolute($path, $isAbsolute)
     {
-        $this->assertEquals($isAbsolute, FileUtils::isAbsolute($path));
+        $this->assertEquals($isAbsolute, Path::isAbsolute($path));
     }
 
     function testIsAbsoluteProvider()
@@ -27,7 +27,7 @@ class FileUtilsTest extends \PHPUnit_Framework_TestCase
         $testCwd = getcwd();
         $dir = realpath('/tmp');
 
-        $cwd = FileUtils::chdir($dir, function() {
+        $cwd = Path::chdir($dir, function() {
             return getcwd();
         });
 
@@ -40,7 +40,7 @@ class FileUtilsTest extends \PHPUnit_Framework_TestCase
      */
     function testWithCwdThrowsExceptionWhenDirectoryDoesNotExist()
     {
-        FileUtils::chdir('/foo', function() {});
+        Path::chdir('/foo', function() {});
     }
 
     /**
@@ -48,7 +48,7 @@ class FileUtilsTest extends \PHPUnit_Framework_TestCase
      */
     function testRelativize($expected, $absolute)
     {
-        $this->assertEquals($expected, FileUtils::relativize($absolute, __DIR__));
+        $this->assertEquals($expected, Path::relativize($absolute, __DIR__));
     }
 
     function testRelativizeProvider()

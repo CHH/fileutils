@@ -2,8 +2,6 @@
 
 namespace CHH\FileUtils;
 
-use CHH\FileUtils;
-
 # Wrapper around the pathinfo() function, provides also some additional
 # path inspecting, like checking if the path is absolute.
 class PathInfo
@@ -22,7 +20,7 @@ class PathInfo
 
     function isAbsolute()
     {
-        return FileUtils::isAbs($this->originalPath);
+        return Path::isAbs($this->originalPath);
     }
 
     function getExtension()

@@ -1,8 +1,8 @@
 <?php
 
-namespace CHH;
+namespace CHH\FileUtils;
 
-class FileUtils
+class Path
 {
     # Public: Checks if the given path is absolute, regardless
     # if the file exists or not.

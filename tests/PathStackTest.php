@@ -10,7 +10,34 @@ class PathstackTest extends \PHPUnit_Framework_TestCase
 
     function setUp()
     {
-        $this->stack = new Pathstack;
+        $this->stack = new PathStack;
+    }
+
+    /**
+     * @dataProvider findDataProvider
+     */
+    function testFind($paths, $extensions, $file, $expected)
+    {
+        $stack = new PathStack();
+        $stack->appendPaths($paths);
+        $stack->appendExtensions($extensions);
+
+        $this->assertEquals($expected, $stack->find($file));
+    }
+
+    function findDataProvider()
+    {
+        return array(
+            array(
+                explode(':', $_SERVER["PATH"]), null, 'ls', '/bin/ls'
+            ),
+            array(
+                array(__DIR__ . "/fixtures/path1", __DIR__ . "/fixtures/path2"),
+                ".php",
+                "foo",
+                __DIR__ . "/fixtures/path2/foo.php"
+            )
+        );
     }
 
     function testPushPathArray()

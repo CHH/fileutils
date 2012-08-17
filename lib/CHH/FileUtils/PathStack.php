@@ -2,15 +2,64 @@
 
 namespace CHH\FileUtils;
 
-class PathStack extends \SplStack
+use SplStack;
+
+class PathStack
 {
     protected $root;
+    protected $paths;
+    protected $extensions;
 
-    function __construct($root = null)
+    function __construct($root = null, $paths = array())
     {
         if (null === $this->root) {
             $this->root = getcwd();
         }
+
+        $this->paths = new SplStack;
+        $this->extensions = new SplStack;
+
+        if ($paths !== null) {
+            $this->appendPaths($paths);
+        }
+    }
+
+    function extensions()
+    {
+        return $this->extensions;
+    }
+
+    function paths()
+    {
+        return $this->paths;
+    }
+
+    function appendPaths($paths)
+    {
+        return $this->push($paths);
+    }
+
+    function prependPaths($paths)
+    {
+        return $this->unshift($paths);
+    }
+
+    function appendExtensions($extensions)
+    {
+        foreach ((array) $extensions as $ext) {
+            $this->extensions->push(Path::normalizeExtension($ext));
+        }
+
+        return $this;
+    }
+
+    function prependExtensions($extensions)
+    {
+        foreach ((array) $extensions as $ext) {
+            $this->extensions->unshift(Path::normalizeExtension($ext));
+        }
+
+        return $this;
     }
 
     function push($paths)
@@ -18,8 +67,7 @@ class PathStack extends \SplStack
         $paths = (array) $paths;
 
         foreach ($paths as $path) {
-            $this->validate($path);
-            parent::push(\CHH\FileUtils::join(array($this->root, rtrim($path, '\/'))));
+            $this->paths->push(rtrim($path, '\/'));
         }
 
         return $this;
@@ -30,8 +78,7 @@ class PathStack extends \SplStack
         $paths = (array) $paths;
 
         foreach ($paths as $path) {
-            $this->validate($path);
-            parent::unshift(\CHH\FileUtils::join(array($this->root, rtrim($path, '\/'))));
+            $this->paths->unshift(rtrim($path, '\/'));
         }
 
         return $this;
@@ -39,34 +86,31 @@ class PathStack extends \SplStack
 
     function find($file)
     {
-        foreach ($this as $loadPath) {
-            $filePath = $loadPath.DIRECTORY_SEPARATOR.$file;
+        foreach ($this->paths() as $loadPath) {
+            $path = Path::join(array($loadPath, $file));
 
-            if (file_exists($filePath)) {
-                return $filePath;
+            if (file_exists($path)) {
+                return $path;
+            } else {
+                foreach ($this->extensions() as $ext) {
+                    if (file_exists($path . $ext)) {
+                        return $path . $ext;
+                    }
+                }
             }
         }
+
         return false;
     }
 
     function __toString()
     {
-        return join(':', iterator_to_array($this));
+        return join(PATH_SEPARATOR, iterator_to_array($this));
     }
 
     function toArray()
     {
-        return iterator_to_array($this);
-    }
-
-    protected function validate($value)
-    {
-        if (!is_dir($value)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Path %s is not a valid directory', $value
-            ));
-        }
-        return $value;
+        return iterator_to_array($this->paths);
     }
 }
 
