@@ -16,6 +16,10 @@ class Path
             return true;
         }
 
+        if (empty($path)) {
+            return false;
+        }
+
         # Absolute Path (Unix) or Absolute UNC Path.
         if ($path[0] === '/' or $path[0] === '\\') {
             return true;
