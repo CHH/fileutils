@@ -19,5 +19,10 @@
             "name": "Christoph Hochstrasser",
             "email": "christoph.hochstrasser@gmail.com"
         }
-    ]
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
 }
